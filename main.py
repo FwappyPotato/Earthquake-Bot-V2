@@ -23,18 +23,23 @@ looptime = 15
 
 waypoint = (30.8715, 120.2730)
 waypoint2 = (40.8715, 120.2230)
-
-print('sending to channel ' + str(channelid))
-print('------')
+print('parsed config:')
+print('channelid ' + str(channelid))
+print('waypoint ' + str(waypoint))
+print('looptime ' + str(looptime))
+print('------------')
 # Discord Bot
 client = discord.Client()
 
 @client.event
 async def on_ready():
     print('logged in as {0.user}'.format(client))
-    print('------')
+    print('------------')
+    # Setup
     d = feedparser.parse('https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_hour.atom')
     modified = d.modified
+    #print(d)
+    # Main Loop
     while True:
         # Parser
         d = feedparser.parse('https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_hour.atom', modified=modified)
@@ -50,10 +55,10 @@ async def on_ready():
         distance = geopy.distance.distance(waypoint, quakecords).miles
         print('eathquake ' + str(distance) + ' miles away')
         # Send Message if within distance
-        if distance < 100:
+        if distance < 10000:
             print('eathquake!!')
             channel = client.get_channel(channelid)
-            await channel.send('earthquake!!')
+            await channel.send('@Earthquake' + "/n" + str(d.entries[0].tags) + ' Earthquake ' + str(distance) + ' from ' + '!!' + "/n/n" + 'Depth: ' + d.entries[0].georss_elev + "/n" + 'Link: ' + d.entries[0].link)
         time.sleep(looptime)
 
 client.run(bottoken)
