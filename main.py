@@ -57,7 +57,7 @@ async def on_ready(): # Yes this is bad, I know... Tell me how to do it better
         quakecords = (d.entries[0].where.coordinates[1], d.entries[0].where.coordinates[0])
         # Find Distance
         distance = geopy.distance.distance(waypoint, quakecords).miles
-        print('eathquake ' + str(distance) + ' miles away ' + quakecords)
+        print('eathquake ' + str(distance) + ' miles away ' + str(quakecords))
         # Send Message if within distance
         if distance < pingdist:
             print('eathquake!!')
