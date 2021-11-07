@@ -1,25 +1,10 @@
-#pip install -U discord.py
-#pip install dotenv
-#import discord
-#from dotenv import load_dotenv
-
-#load_dotenv()
-#TOKEN = os.getenv('DISCORD_TOKEN')
-#client = discord.Client()
-
-#@client.event
-#async def on_ready():
-#    print(f'{client.user} has connected to Discord!')
-
-#client.run(TOKEN)
 import logging
 import discord
 import configparser
 import feedparser
 import geopy.distance
 import time
-#I'm not sure if pip'll work for the other varibles, googling now
-$ pip install -U discord.py
+
 # Logging
 #logger = logging.getLogger('discord')
 #logger.setLevel(logging.DEBUG)
