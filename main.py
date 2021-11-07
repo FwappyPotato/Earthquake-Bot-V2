@@ -54,13 +54,12 @@ async def on_ready(): # Yes this is bad, I know... Tell me how to do it better
             time.sleep(looptime)
             continue
         modified = d.modified
-        print('updated at ' + modified)
+        print('--updated at ' + modified)
         id = d.entries[0].id
         quakecords = (d.entries[0].where.coordinates[1], d.entries[0].where.coordinates[0])
-        print(quakecords)
         # Find Distance
         distance = geopy.distance.distance(waypoint, quakecords).miles
-        print('eathquake ' + str(distance) + ' miles away')
+        print('eathquake ' + str(distance) + ' miles away ' + quakecords)
         # Send Message if within distance
         if distance < pingdist:
             print('eathquake!!')
