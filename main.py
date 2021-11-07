@@ -24,7 +24,7 @@ looptime = int(config['default']['frequency'])
 
 waypoint = config['default']['waypointlat'], config['default']['waypointlon']
 waypointname = config['default']['waypointname']
-pingdist = config['default']['distance']
+pingdist = int(config['default']['distance'])
 
 print('channelid ' + str(channelid))
 print('waypoint ' + waypointname + ' ' + str(waypoint) + ' ' + str(type(waypoint)))
