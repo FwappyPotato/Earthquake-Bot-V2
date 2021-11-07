@@ -23,42 +23,48 @@ looptime = 15
 
 waypoint = (30.8715, 120.2730)
 waypoint2 = (40.8715, 120.2230)
-print('parsed config:')
+location = 'Berkeley'
+pingdist = 100
+
 print('channelid ' + str(channelid))
-print('waypoint ' + str(waypoint))
+print('waypoint ' + location + ' ' + str(waypoint))
 print('looptime ' + str(looptime))
-print('------------')
 # Discord Bot
 client = discord.Client()
 
 @client.event
-async def on_ready():
+async def on_ready(): # Yes this is bad, I know... Tell me how to do it better
+    print('------------')
     print('logged in as {0.user}'.format(client))
     print('------------')
     # Setup
+    channel = client.get_channel(channelid)
     d = feedparser.parse('https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_hour.atom')
     modified = d.modified
+    id = d.entries[0].id
+    await client.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name="USGS Earthquakes"))
     #print(d)
     # Main Loop
     while True:
         # Parser
+        oldid = id
         d = feedparser.parse('https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_hour.atom', modified=modified)
-        if d.status == 304:
+        if d.status == 304 or d.entries[0].id == oldid:
             #print('unchanged')
             time.sleep(looptime)
             continue
         modified = d.modified
         print('updated at ' + modified)
+        id = d.entries[0].id
         quakecords = (d.entries[0].where.coordinates[1], d.entries[0].where.coordinates[0])
         print(quakecords)
         # Find Distance
         distance = geopy.distance.distance(waypoint, quakecords).miles
         print('eathquake ' + str(distance) + ' miles away')
         # Send Message if within distance
-        if distance < 10000:
+        if distance < pingdist:
             print('eathquake!!')
-            channel = client.get_channel(channelid)
-            await channel.send('@Earthquake' + "/n" + str(d.entries[0].tags) + ' Earthquake ' + str(distance) + ' from ' + '!!' + "/n/n" + 'Depth: ' + d.entries[0].georss_elev + "/n" + 'Link: ' + d.entries[0].link)
+            await channel.send('<@&906630979450449960>\n`' + str(d.entries[0].tags[1].term) + '` earthquake `' + str("%.2f" % distance) + '` miles from ' + location + '!!\n\n' + 'Time: `' + d.entries[0] + '`\nDepth: `' + d.entries[0].georss_elev + ' Meters`\n' + d.entries[0].link)
         time.sleep(looptime)
 
 client.run(bottoken)
