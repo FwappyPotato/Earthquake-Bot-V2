@@ -16,18 +16,17 @@ import time
 config = configparser.ConfigParser()
 config.read('conf.ini')
 
-bottoken = config['DEFAULT']['token']
-channelid = int(config['DEFAULT']['channel'])
+bottoken = config['default']['token']
+channelid = int(config['default']['channel'])
 
-looptime = 15
+looptime = int(config['default']['frequency'])
 
-waypoint = (30.8715, 120.2730)
-waypoint2 = (40.8715, 120.2230)
-location = 'Berkeley'
-pingdist = 100
+waypoint = config['default']['waypoint']
+waypointname = config['default']['waypointname']
+pingdist = config['default']['distance']
 
 print('channelid ' + str(channelid))
-print('waypoint ' + location + ' ' + str(waypoint))
+print('waypoint ' + waypointname + ' ' + str(waypoint))
 print('looptime ' + str(looptime))
 # Discord Bot
 client = discord.Client()
@@ -63,7 +62,7 @@ async def on_ready(): # Yes this is bad, I know... Tell me how to do it better
         # Send Message if within distance
         if distance < pingdist:
             print('eathquake!!')
-            await channel.send('<@&906630979450449960>\n`' + str(d.entries[0].tags[1].term) + '` earthquake `' + str("%.2f" % distance) + '` miles from ' + location + '!!\n\n' + 'Time: `' + d.entries[0] + '`\nDepth: `' + d.entries[0].georss_elev + ' Meters`\n' + d.entries[0].link)
+            await channel.send('<@&906630979450449960>\n`' + str(d.entries[0].tags[1].term) + '` earthquake `' + str("%.2f" % distance) + '` miles from ' + waypointname + '!!\n\n' + 'Time: `' + d.entries[0] + '`\nDepth: `' + d.entries[0].georss_elev + ' Meters`\n' + d.entries[0].link)
         time.sleep(looptime)
 
 client.run(bottoken)
