@@ -1,5 +1,5 @@
 # Eathquake-Bot-V2
- Lets try this in python
+Rewrte after I failed at Golang
 
  Install Dependencies:
  `pip install discord geopy feedparser configparser`
