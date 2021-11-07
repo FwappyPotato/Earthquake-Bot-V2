@@ -53,6 +53,7 @@ async def on_ready(): # Yes this is bad, I know... Tell me how to do it better
             time.sleep(looptime)
             continue
         modified = d.modified
+        print()
         print('--updated at ' + modified)
         quakecords = (d.entries[0].where.coordinates[1], d.entries[0].where.coordinates[0])
         # Find Distance
@@ -60,7 +61,7 @@ async def on_ready(): # Yes this is bad, I know... Tell me how to do it better
         print('eathquake ' + str(distance) + ' miles away ' + str(quakecords))
         # Send Message if within distance
         if distance < pingdist:
-            print('eathquake!!')
+            print('Under ' + str(pingdist) + ' sending Discord Message!!')
             await channel.send('<@&' + roleid + '>\n`' + str(d.entries[0].tags[1].term) + '` earthquake `' + str("%.2f" % distance) + '` miles from ' + waypointname + '!!\n\n' + 'Time: `' + d.entries[0] + '`\nDepth: `' + d.entries[0].georss_elev + ' Meters`\n' + d.entries[0].link)
         oldid = d.entries[0].id
         time.sleep(looptime)
