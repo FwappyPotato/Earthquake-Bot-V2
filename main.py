@@ -18,15 +18,16 @@ config.read('conf.ini')
 
 bottoken = config['default']['token']
 channelid = int(config['default']['channel'])
+roleid = config['default']['roleid']
 
 looptime = int(config['default']['frequency'])
 
-waypoint = config['default']['waypoint']
+waypoint = config['default']['waypointlat'], config['default']['waypointlon']
 waypointname = config['default']['waypointname']
 pingdist = config['default']['distance']
 
 print('channelid ' + str(channelid))
-print('waypoint ' + waypointname + ' ' + str(waypoint))
+print('waypoint ' + waypointname + ' ' + str(waypoint) + ' ' + str(type(waypoint)))
 print('looptime ' + str(looptime))
 # Discord Bot
 client = discord.Client()
@@ -40,13 +41,12 @@ async def on_ready(): # Yes this is bad, I know... Tell me how to do it better
     channel = client.get_channel(channelid)
     d = feedparser.parse('https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_hour.atom')
     modified = d.modified
-    id = d.entries[0].id
+    oldid = d.entries[0].id
     await client.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name="USGS Earthquakes"))
     #print(d)
     # Main Loop
     while True:
         # Parser
-        oldid = id
         d = feedparser.parse('https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_hour.atom', modified=modified)
         if d.status == 304 or d.entries[0].id == oldid:
             #print('unchanged')
@@ -54,7 +54,6 @@ async def on_ready(): # Yes this is bad, I know... Tell me how to do it better
             continue
         modified = d.modified
         print('--updated at ' + modified)
-        id = d.entries[0].id
         quakecords = (d.entries[0].where.coordinates[1], d.entries[0].where.coordinates[0])
         # Find Distance
         distance = geopy.distance.distance(waypoint, quakecords).miles
@@ -62,7 +61,8 @@ async def on_ready(): # Yes this is bad, I know... Tell me how to do it better
         # Send Message if within distance
         if distance < pingdist:
             print('eathquake!!')
-            await channel.send('<@&906630979450449960>\n`' + str(d.entries[0].tags[1].term) + '` earthquake `' + str("%.2f" % distance) + '` miles from ' + waypointname + '!!\n\n' + 'Time: `' + d.entries[0] + '`\nDepth: `' + d.entries[0].georss_elev + ' Meters`\n' + d.entries[0].link)
+            await channel.send('<@&' + roleid + '>\n`' + str(d.entries[0].tags[1].term) + '` earthquake `' + str("%.2f" % distance) + '` miles from ' + waypointname + '!!\n\n' + 'Time: `' + d.entries[0] + '`\nDepth: `' + d.entries[0].georss_elev + ' Meters`\n' + d.entries[0].link)
+        oldid = d.entries[0].id
         time.sleep(looptime)
 
 client.run(bottoken)
