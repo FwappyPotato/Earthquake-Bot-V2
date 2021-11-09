@@ -24,12 +24,22 @@ if distance1 < pingdist or distance2 < pingdist or distance3 < pingdist: #config
 if d.entries[0].id == oldid
     #call editmessage
 #call newmessage
+oldid = d.entries[0].id
 
 #could look for previous ID in feed instead of only entries index 1, then we can continue updating even if there are consecutive eathquakes
+#if previous eathquake is updated while this one is still at top, it will update for no reason
+
+# Discord Bot - this is the only stuff tied to the discord bot component
+
+#editmessage
+await edit(**fields)
+
+#newmessage
+await send('<@&' + roleid + '>\n`' + str(d.entries[0].tags[1].term) + '` earthquake `' + str("%.2f" % distance) + '` miles from ' + waypointname + '!!\n\n' + 'Time: `' + d.entries[0] + '`\nDepth: `' + d.entries[0].georss_elev + ' Meters`\n' + d.entries[0].link)
 
 
 
+#set status and discord stuffs
 
-# Discord Bot
 
-oldid = d.entries[0].id
+
