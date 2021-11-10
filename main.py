@@ -4,6 +4,7 @@ import configparser
 import feedparser
 import geopy.distance
 import time
+import asyncio
 
 # Logging
 #logger = logging.getLogger('discord')
