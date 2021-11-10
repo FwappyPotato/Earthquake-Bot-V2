@@ -12,6 +12,8 @@ import time
 #handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
 #logger.addHandler(handler)
 
+logging.basicConfig(level=logging.INFO)
+
 # Config
 config = configparser.ConfigParser()
 config.read('conf.ini')
