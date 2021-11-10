@@ -2,7 +2,6 @@
 d = feedparser.parse('https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_hour.atom', modified=modified)
 if d.status == 304:
     #print('unchanged')
-    time.sleep(looptime)
     #exit loop
 modified = d.modified
 print('--updated at ' + modified)
