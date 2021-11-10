@@ -54,7 +54,7 @@ async def on_ready(): # Yes this is bad, I know... Tell me how to do it better
         d = feedparser.parse('https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_hour.atom', modified=modified)
         if d.status == 304 or d.entries[0].id == oldid:
             #print('unchanged')
-            time.sleep(looptime)
+            await asyncio.sleep(looptime)
             continue
         modified = d.modified
         print()
@@ -68,6 +68,6 @@ async def on_ready(): # Yes this is bad, I know... Tell me how to do it better
             print('Under ' + str(pingdist) + ' sending Discord Message!!')
             await channel.send('<@&' + roleid + '>\n`' + str(d.entries[0].title) + '\n`' + str("%.2f" % distance) + '` miles from ' + waypointname + '!!\n\n' + 'Time: `' + d.entries[0].summary + '`\nDepth: `' + d.entries[0].georss_elev + ' Meters`\n' + d.entries[0].link)
         oldid = d.entries[0].id
-        time.sleep(looptime)
+        await asyncio.sleep(looptime)
 
 client.run(bottoken)
