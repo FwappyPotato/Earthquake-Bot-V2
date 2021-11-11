@@ -73,7 +73,7 @@ async def on_ready(): # Yes this is bad, I know... Tell me how to do it better
         distance1 = geopy.distance.distance(waypoint1, quakecords).miles
         distance2 = geopy.distance.distance(waypoint2, quakecords).miles
         distance3 = geopy.distance.distance(waypoint3, quakecords).miles
-        print(str("%.2f" % distance1) + ' miles away ' + ' --- ' + str(d.entries[0].title) + ' ' + str(quakecords))
+        print(str("%.2f" % distance1) + ' miles away --- ' + str(d.entries[0].title) + ' ' + str(quakecords))
         # Send Message if within distance
         if distance1 < pingdist or distance2 < pingdist or distance3 < pingdist:
             print('Under ' + str(pingdist) + ' miles sending Discord Message!!')
