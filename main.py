@@ -34,13 +34,13 @@ waypoint3name = config['default']['waypoint3name']
 
 pingdist = int(config['default']['distance'])
 
-print('channelid ' + str(channelid))
-print('roleid ' + str(roleid))
-print('waypoint1 ' + waypoint1name + ' ' + str(waypoint1) + ' ' + str(type(waypoint1)))
-print('waypoint2 ' + waypoint2name + ' ' + str(waypoint2) + ' ' + str(type(waypoint2)))
-print('waypoint3 ' + waypoint3name + ' ' + str(waypoint3) + ' ' + str(type(waypoint3)))
-print('pingdist ' + str(pingdist) + ' miles')
-print('looptime ' + str(looptime) + ' seconds')
+print('channelid: ' + str(channelid))
+print('roleid: ' + str(roleid))
+print('waypoint1: ' + waypoint1name + ' ' + str(waypoint1) + ' ' + str(type(waypoint1)))
+print('waypoint2: ' + waypoint2name + ' ' + str(waypoint2) + ' ' + str(type(waypoint2)))
+print('waypoint3: ' + waypoint3name + ' ' + str(waypoint3) + ' ' + str(type(waypoint3)))
+print('pingdist: ' + str(pingdist) + ' miles')
+print('looptime: ' + str(looptime) + ' seconds')
 
 # Discord Bot
 client = discord.Client()
