@@ -67,7 +67,7 @@ async def on_ready(): # Yes this is bad, I know... Tell me how to do it better
         # Send Message if within distance
         if distance < pingdist:
             print('Under ' + str(pingdist) + ' sending Discord Message!!')
-            await channel.send('<@&' + roleid + '>\n' + str(d.entries[0].title) + '\n`' + str("%.2f" % distance) + '` miles from ' + waypointname + '\n\n' + 'Time: `' + d.entries[0].updated + '`\nDepth: `' + d.entries[0].georss_elev + ' Meters`\n' + d.entries[0].link)
+            await channel.send('<@&' + roleid + '>\n**' + str(d.entries[0].title) + '**\n`' + str("%.2f" % distance) + '` miles from ' + waypointname + '\n\n' + 'Time: `' + d.entries[0].updated + '`\nDepth: `' + d.entries[0].georss_elev + ' Meters`\n' + d.entries[0].link)
         oldid = d.entries[0].id
         await asyncio.sleep(looptime)
 
