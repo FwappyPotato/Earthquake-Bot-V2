@@ -25,7 +25,7 @@ roleid = config['default']['roleid']
 
 looptime = int(config['default']['frequency'])
 
-waypoint = config['default']['waypointlat'], config['default']['waypointlon']
+waypoint = (float(config['default']['waypointlat']), float(config['default']['waypointlon']))
 waypointname = config['default']['waypointname']
 pingdist = int(config['default']['distance'])
 
@@ -60,14 +60,14 @@ async def on_ready(): # Yes this is bad, I know... Tell me how to do it better
         modified = d.modified
         print()
         print('--updated at ' + modified)
-        quakecords = (d.entries[0].where.coordinates[1], d.entries[0].where.coordinates[0])
+        quakecords = (float(d.entries[0].where.coordinates[1]), float(d.entries[0].where.coordinates[0]))
         # Find Distance
         distance = geopy.distance.distance(waypoint, quakecords).miles
         print(str("%.2f" % distance) + ' miles away ' + ' --- ' + str(d.entries[0].title) + ' ' + str(quakecords))
         # Send Message if within distance
         if distance < pingdist:
             print('Under ' + str(pingdist) + ' sending Discord Message!!')
-            await channel.send('<@&' + roleid + '>\n`' + str(d.entries[0].title) + '\n`' + str("%.2f" % distance) + '` miles from ' + waypointname + '!!\n\n' + 'Time: `' + d.entries[0].summary + '`\nDepth: `' + d.entries[0].georss_elev + ' Meters`\n' + d.entries[0].link)
+            await channel.send('<@&' + roleid + '>\n' + str(d.entries[0].title) + '\n`' + str("%.2f" % distance) + '` miles from ' + waypointname + '\n\n' + 'Time: `' + d.entries[0].updated + '`\nDepth: `' + d.entries[0].georss_elev + ' Meters`\n' + d.entries[0].link)
         oldid = d.entries[0].id
         await asyncio.sleep(looptime)
 
