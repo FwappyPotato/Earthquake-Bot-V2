@@ -56,6 +56,8 @@ async def on_ready(): # Yes this is bad, I know... Tell me how to do it better
     modified = d.modified
     try:
         oldid = d.entries[0].id
+    except:
+        print('no earthquakes in last hour')
     await client.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name="USGS Earthquakes"))
     #print(d)
     # Main Loop
