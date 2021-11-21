@@ -54,7 +54,8 @@ async def on_ready(): # Yes this is bad, I know... Tell me how to do it better
     channel = client.get_channel(channelid)
     d = feedparser.parse('https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/2.5_hour.atom')
     modified = d.modified
-    oldid = d.entries[0].id
+    try:
+        oldid = d.entries[0].id
     await client.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name="USGS Earthquakes"))
     #print(d)
     # Main Loop
