@@ -86,7 +86,7 @@ async def on_ready(): # Yes this is bad, I know... Tell me how to do it better
             print('Under ' + str(pingdist) + ' miles sending Discord Message!!')
             depth = abs(float(d.entries[0].georss_elev))
             depth /= 1000.
-            await channel.send('<@&' + roleid + '>\n**' + str(d.entries[0].title) + '**\n`' + str("%.2f" % distance1) + '` miles from ' + waypoint1name + '\n`' + str("%.2f" % distance2) + '` miles from ' + waypoint2name + '\n`' + str("%.2f" % distance3) + '` miles from ' + waypoint3name + '\n\n' + 'Time: `' + d.entries[0].updated + '`\nDepth: `' + str(depth) + ' Km`\nLocation: `' + str(quakecords) + '`\n' + d.entries[0].link)
+            await channel.send('<@&' + roleid + '>\n**' + str(d.entries[0].title) + '**\n`' + str("%.2f" % distance1) + '` miles from ' + waypoint1name + '\n`' + str("%.2f" % distance2) + '` miles from ' + waypoint2name + '\n`' + str("%.2f" % distance3) + '` miles from ' + waypoint3name + '\nSummary: ' + d.entries[0].summary +'\n' + 'Time: `' + d.entries[0].updated + '`\nDepth: `' + str(depth) + ' Km`\nLocation: `' + str(quakecords) + '`\n' + d.entries[0].link)
         oldid = d.entries[0].id
         await asyncio.sleep(looptime)
 
