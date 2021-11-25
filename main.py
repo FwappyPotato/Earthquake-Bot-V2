@@ -63,7 +63,7 @@ async def on_ready(): # Yes this is bad, I know... Tell me how to do it better
     # Main Loop
     while True:
         # Parser
-        d = feedparser.parse('https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_hour.atom', modified=modified)
+        d = feedparser.parse('https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/2.5_hour.atom', modified=modified)
         try:
             if d.status == 304 or d.entries[0].id == oldid:
                 #print('unchanged')
