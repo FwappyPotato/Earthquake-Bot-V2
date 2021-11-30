@@ -5,13 +5,8 @@ import feedparser
 import geopy.distance
 import time
 import asyncio
+from discord.ext import tasks
 
-# Logging
-#logger = logging.getLogger('discord')
-#logger.setLevel(logging.DEBUG)
-#handler = logging.FileHandler(filename='discord.log', encoding='utf-8', mode='w')
-#handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
-#logger.addHandler(handler)
 
 logging.basicConfig(level=logging.INFO)
 
@@ -42,52 +37,69 @@ print('waypoint3: ' + waypoint3name + ' ' + str(waypoint3) + ' ' + str(type(wayp
 print('pingdist: ' + str(pingdist) + ' miles')
 print('looptime: ' + str(looptime) + ' seconds')
 
+
+
 # Discord Bot
 client = discord.Client()
+
+
+# Setup
+channel = client.get_channel(channelid)
+d = feedparser.parse('https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/2.5_hour.atom')
+modified = d.modified
+try:
+    oldid = d.entries[0].id
+except:
+    print('no earthquakes in last hour')
+
+
+@tasks.loop(seconds=15)
+async def parser():
+    await client.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name="USGS Earthquakes"))
+
+
+    d = feedparser.parse('https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/2.5_hour.atom', modified=modified)
+    try:
+        if d.status == 304 or d.entries[0].id == oldid:
+            #print('unchanged')
+            continue
+    except:
+        continue
+
+
+    modified = d.modified
+    print()
+    print('--updated at ' + modified)
+    
+
+    quakecords = (float(d.entries[0].where.coordinates[1]), float(d.entries[0].where.coordinates[0]))
+    
+    distance1 = geopy.distance.distance(waypoint1, quakecords).miles
+    distance2 = geopy.distance.distance(waypoint2, quakecords).miles
+    distance3 = geopy.distance.distance(waypoint3, quakecords).miles
+    print(str("%.2f" % distance1) + ' miles away --- ' + str(d.entries[0].title) + ' ' + str(quakecords))
+
+
+    # Send Message if within distance
+    if distance1 < pingdist or distance2 < pingdist or distance3 < pingdist:
+        print('Under ' + str(pingdist) + ' miles sending Discord Message!!')
+
+        time = str(d.entries[0].summary) # put regex here
+
+        depth = abs(float(d.entries[0].georss_elev))
+        depth /= 1000.
+
+
+        await channel.send('<@&' + roleid + '>\n**' + str(d.entries[0].title) + '**\n`' + str("%.2f" % distance1) + '` miles from ' + waypoint1name + '\n`' + str("%.2f" % distance2) + '` miles from ' + waypoint2name + '\n`' + str("%.2f" % distance3) + '` miles from ' + waypoint3name + '\nSummary: ' + d.entries[0].summary +'\n' + 'Time: `' + d.entries[0].updated + '`\nDepth: `' + str(depth) + ' Km`\nLocation: `' + str(quakecords) + '`\n' + d.entries[0].link)
+   
+    oldid = d.entries[0].id
+
 
 @client.event
 async def on_ready(): # Yes this is bad, I know... Tell me how to do it better
     print('------------')
     print('logged in as {0.user}'.format(client))
     print('------------')
-    # Setup
-    channel = client.get_channel(channelid)
-    d = feedparser.parse('https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/2.5_hour.atom')
-    modified = d.modified
-    try:
-        oldid = d.entries[0].id
-    except:
-        print('no earthquakes in last hour')
-    await client.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name="USGS Earthquakes"))
-    #print(d)
-    # Main Loop
-    while True:
-        # Parser
-        d = feedparser.parse('https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/2.5_hour.atom', modified=modified)
-        try:
-            if d.status == 304 or d.entries[0].id == oldid:
-                #print('unchanged')
-                await asyncio.sleep(looptime)
-                continue
-        except:
-            await asyncio.sleep(looptime)
-            continue
-        modified = d.modified
-        print()
-        print('--updated at ' + modified)
-        quakecords = (float(d.entries[0].where.coordinates[1]), float(d.entries[0].where.coordinates[0]))
-        # Find Distance
-        distance1 = geopy.distance.distance(waypoint1, quakecords).miles
-        distance2 = geopy.distance.distance(waypoint2, quakecords).miles
-        distance3 = geopy.distance.distance(waypoint3, quakecords).miles
-        print(str("%.2f" % distance1) + ' miles away --- ' + str(d.entries[0].title) + ' ' + str(quakecords))
-        # Send Message if within distance
-        if distance1 < pingdist or distance2 < pingdist or distance3 < pingdist:
-            print('Under ' + str(pingdist) + ' miles sending Discord Message!!')
-            depth = abs(float(d.entries[0].georss_elev))
-            depth /= 1000.
-            await channel.send('<@&' + roleid + '>\n**' + str(d.entries[0].title) + '**\n`' + str("%.2f" % distance1) + '` miles from ' + waypoint1name + '\n`' + str("%.2f" % distance2) + '` miles from ' + waypoint2name + '\n`' + str("%.2f" % distance3) + '` miles from ' + waypoint3name + '\nSummary: ' + d.entries[0].summary +'\n' + 'Time: `' + d.entries[0].updated + '`\nDepth: `' + str(depth) + ' Km`\nLocation: `' + str(quakecords) + '`\n' + d.entries[0].link)
-        oldid = d.entries[0].id
-        await asyncio.sleep(looptime)
+
 
 client.run(bottoken)
