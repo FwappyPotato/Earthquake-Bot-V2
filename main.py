@@ -8,6 +8,7 @@ import asyncio
 from discord.ext import tasks
 
 
+
 logging.basicConfig(level=logging.INFO)
 
 # Config
@@ -61,8 +62,7 @@ async def parser():
     d = feedparser.parse('https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/2.5_hour.atom', modified=modified)
     try:
         if d.status == 304 or d.entries[0].id == oldid:
-            #print('unchanged')
-            continue
+        continue
     except:
         continue
 
